@@ -647,14 +647,14 @@ class CheckIn:
                         bonus_quota = round(user_data.get("bonus_quota", 0) / 500000, 2)
                         print(
                             f"✅ {self.account_name}: "
-                            f"Current balance: ${quota}, Used: ${used_quota}, Bonus: ${bonus_quota}"
+                            f"当前余额: ${quota}, Used: ${used_quota}, Bonus: ${bonus_quota}"
                         )
                         return {
                             "success": True,
                             "quota": quota,
                             "used_quota": used_quota,
                             "bonus_quota": bonus_quota,
-                            "display": f"Current balance: ${quota}, Used: ${used_quota}, Bonus: ${bonus_quota}",
+                            "display": f"Current balance: ${quota}, 已使用: ${used_quota}, 奖励: ${bonus_quota}",
                         }
 
                     return {
