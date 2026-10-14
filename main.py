@@ -93,10 +93,10 @@ async def main():
 
             this_account_balances = {}
             # 构建详细的结果报告
-            account_result = f"📣 {account_name} Summary:\n"
+            account_result = f"📣 {account_name} 签到摘要:\n"
             for auth_method, success, user_info in results:
-                status = "✅ SUCCESS" if success else "❌ FAILED"
-                account_result += f"  {status} with {auth_method} authentication\n"
+                status = "✅ SUCCESS" if success else "❌ 失败"
+                account_result += f"  {status} 认证方式 {auth_method} authentication\n"
 
                 if success and user_info and user_info.get("success"):
                     account_success = True
@@ -168,24 +168,24 @@ async def main():
         # 构建通知内容
         summary = [
             "-------------------------------",
-            "📢 Check-in result statistics:",
-            f"🔵 Success: {success_count}/{total_count}",
-            f"🔴 Failed: {total_count - success_count}/{total_count}",
+            "📢 签到结果统计:",
+            f"🔵 成功: {success_count}/{total_count}",
+            f"🔴 失败: {total_count - success_count}/{total_count}",
         ]
 
         if success_count == total_count:
-            summary.append("✅ All accounts check-in successful!")
+            summary.append("✅ 所有账号签到成功!")
         elif success_count > 0:
             summary.append("⚠️ Some accounts check-in successful")
         else:
             summary.append("❌ All accounts check-in failed")
 
-        time_info = f'🕓 Execution time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
+        time_info = f'🕓 执行时间: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
 
         notify_content = "\n\n".join([time_info, "\n".join(notification_content), "\n".join(summary)])
 
         print(notify_content)
-        notify.push_message("Check-in Alert", notify_content, msg_type="text")
+        notify.push_message("签到提醒", notify_content, msg_type="text")
         print("🔔 Notification sent due to failures or balance changes")
     else:
         print("ℹ️ All accounts successful and no balance changes detected, notification skipped")
