@@ -28,6 +28,14 @@ class NotificationKit:
 		return os.getenv('PUSHPLUS_TOKEN')
 
 	@property
+	def wxpusher_app_token(self):
+	    return os.getenv('WXPUSHER_APP_TOKEN')
+	
+	@property
+	def wxpusher_uid(self):
+	    return os.getenv('WXPUSHER_UID')
+
+	@property
 	def server_push_key(self):
 		return os.getenv('SERVERPUSHKEY')
 
@@ -73,6 +81,29 @@ class NotificationKit:
 
 		data = {'token': self.pushplus_token, 'title': title, 'content': content, 'template': 'html'}
 		curl_requests.post('http://www.pushplus.plus/send', json=data, timeout=30)
+
+	def send_wxpusher(self, title: str, content: str):
+	    if not self.wxpusher_app_token or not self.wxpusher_uid:
+	        raise ValueError('WXPusher AppToken or UID not configured')
+	
+	    data = {
+	        'appToken': self.wxpusher_app_token,
+	        'content': f'{title}\n{content}',
+	        'summary': title[:100],
+	        'contentType': 1,
+	        'uids': [self.wxpusher_uid],
+	    }
+	
+	    response = curl_requests.post(
+	        'https://wxpusher.zjiecode.com/api/send/message',
+	        json=data,
+	        timeout=30,
+	    )
+	    response.raise_for_status()
+	
+	    result = response.json()
+	    if result.get('code') != 1000:
+	        raise RuntimeError(result.get('msg', 'WXPusher returned an error'))
 
 	def send_serverPush(self, title: str, content: str):
 		if not self.server_push_key:
@@ -125,6 +156,7 @@ class NotificationKit:
 			('Feishu', lambda: self.send_feishu(title, content)),
 			('WeChat Work', lambda: self.send_wecom(title, content)),
 			('Telegram', lambda: self.send_telegram(title, content)),
+			('WXPusher', lambda: self.send_wxpusher(title, content)),
 		]
 
 		for name, func in notifications:
